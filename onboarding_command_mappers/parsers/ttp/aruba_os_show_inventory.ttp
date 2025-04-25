@@ -1,1 +1,2 @@
 System Serial#                  : {{ serial }} .*
+SC Model                        : {{ device_model }}
