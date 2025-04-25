@@ -9,12 +9,14 @@ sync_devices:
     commands:
       - command: "show inventory"
         parser: "ttp"
-        jpath: "[*].serial"
+        jpath: "[*].serial[]"
+        post_processor: "{{ obj | unique | first }}"
+        iterable_type: "str"
   device_type:
     commands:
-      - command: "show system"
-        parser: "textfsm"
-        jpath: "[*].product[]"
+      - command: "show inventory"
+        parser: "ttp"
+        jpath: "[*].device_model[]"
         post_processor: "{{ obj | unique | first }}"
         iterable_type: "str"
   mgmt_interface:
