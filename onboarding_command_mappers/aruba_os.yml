@@ -5,20 +5,19 @@ sync_devices:
       - command: "show hostname"
         parser: "ttp"
         jpath: "[*].hostname"
+        post_processor: "{{ obj[0] }}"
   serial:
     commands:
       - command: "show inventory"
         parser: "ttp"
-        jpath: "[*].serial[]"
-        post_processor: "{{ obj | unique | first }}"
-        iterable_type: "str"
+        jpath: "[*].serial"
+        post_processor: "{{ obj[0] }}"
   device_type:
     commands:
       - command: "show inventory"
         parser: "ttp"
-        jpath: "[*].device_model[]"
-        post_processor: "{{ obj | unique | first }}"
-        iterable_type: "str"
+        jpath: "[*].device_model"
+        post_processor: "{{ obj[0] }}"
   mgmt_interface:
     commands:
       - command: "show interface"
