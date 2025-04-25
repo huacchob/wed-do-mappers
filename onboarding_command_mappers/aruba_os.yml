@@ -7,11 +7,9 @@ sync_devices:
         jpath: "[*].hostname"
   serial:
     commands:
-      - command: "show system"
-        parser: "textfsm"
-        jpath: "[*].serial[]"
-        post_processor: "{{ obj | unique | first }}"
-        iterable_type: "str"
+      - command: "show inventory"
+        parser: "ttp"
+        jpath: "[*].serial"
   device_type:
     commands:
       - command: "show system"
