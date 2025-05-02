@@ -1,2 +1,2 @@
-System Serial#                  : {{ serial }} .*
-SC Model                        : {{ device_model }}
+System Serial# : {{ serial | WORD }} {{ ignore('.*') }}
+SC Model : {{ device_model }}
