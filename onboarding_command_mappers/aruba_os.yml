@@ -20,14 +20,14 @@ sync_devices:
         post_processor: "{{ obj[0] }}"
   mgmt_interface:
     commands:
-      - command: "show interface"
-        parser: "textfsm"
-        jpath: "[?contains(ip_address, `{{ obj }}/`)].{name: interface, enabled: link_status}"
-        post_processor: "{{ (obj | selectattr('enabled', 'eq', 'up') | list | first ).name }}"
+      - command: "show ip interface brief"
+        parser: "ttp"
+        jpath: "[?self_ip=='{{ obj }}'].interface"
+        post_processor: "{{ obj[0] }}"
   mask_length:
     commands:
-      - command: "show interface"
-        parser: "textfsm"
-        jpath: "[?contains(ip_address, `{{ obj }}/`)].ip_address"
-        post_processor: "{{ obj[0].split('/')[1] }}"
+      - command: "show ip interface brief"
+        parser: "ttp"
+        jpath: "[?self_ip=='{{ obj }}'].netmask"
+        post_processor: "{{ obj[0] | netmask_to_cidr }}"
         iterable_type: "int"
