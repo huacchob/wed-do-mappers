@@ -28,6 +28,6 @@ sync_devices:
     commands:
       - command: "show router interface system"
         parser: "ttp"
-        jpath: "[?ip_address=='{{ obj }}'].system || [?ip_address=='10.12.97.10'].system"
+        jpath: "[?ip_address=='{{ obj }}'].cidr || [?ip_address=='10.12.97.10'].cidr"
         post_processor: "{{ obj[0] }}"
         iterable_type: "int"
