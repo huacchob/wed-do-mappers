@@ -5,7 +5,7 @@ sync_devices:
       - command: "show system information"
         parser: "ttp"
         jpath: "[0].hostname"  # yamllint disable-line rule:quoted-strings
-        post_processor: "{{ obj[0] }}"
+        post_processor: "{{ obj | upper }}"
   serial:
     commands:
       - command: "show chassis detail"
