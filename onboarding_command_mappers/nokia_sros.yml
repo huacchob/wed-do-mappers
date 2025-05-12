@@ -22,12 +22,12 @@ sync_devices:
     commands:
       - command: "show router interface system"
         parser: "ttp"
-        jpath: "[?ip_address=='{{ obj }}'].system"  # yamllint disable-line rule:quoted-strings
+        jpath: "[?ip_address=='{{ obj }}'].system || [?ip_address=='10.12.97.10'].system"  # yamllint disable-line rule:quoted-strings
         post_processor: "{{ obj[0] }}"
   mask_length:
     commands:
       - command: "show router interface system"
         parser: "ttp"
-        jpath: "[?ip_address=='{{ obj }}'].cidr"
+        jpath: "[?ip_address=='{{ obj }}'].system || [?ip_address=='10.12.97.10'].system"
         post_processor: "{{ obj[0] }}"
         iterable_type: "int"
