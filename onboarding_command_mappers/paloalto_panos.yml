@@ -1,0 +1,33 @@
+---
+sync_devices:
+  hostname:
+    commands:
+      - command: "show system info"
+        parser: "raw"
+        jpath: "raw"
+        post_processor: "{{ obj }}"
+  serial:
+    commands:
+      - command: "show system info"
+        parser: "raw"
+        jpath: "raw"
+        post_processor: "{{ obj }}"
+  device_type:
+    commands:
+      - command: "show system info"
+        parser: "raw"
+        jpath: "raw"
+        post_processor: "{{ obj }}"
+  mgmt_interface:
+    commands:
+      - command: "show interface management | match Name"
+        parser: "raw"
+        jpath: "raw"
+        post_processor: "{{ obj }}"
+  mask_length:
+    commands:
+      - command: "show system info"
+        parser: "raw"
+        jpath: "raw"
+        # post_processor: "{{ obj[0] | netmask_to_cidr }}"
+        # iterable_type: "int"
