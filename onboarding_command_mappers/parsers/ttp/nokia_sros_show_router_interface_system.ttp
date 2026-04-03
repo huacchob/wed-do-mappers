@@ -3,10 +3,11 @@
 {{ ignore("Interface Table \(Router: Base\)") }}
 {{ ignore("=+") }}
 {{ ignore("Interface-Name.*") }}
-{{ ignore("IP-Address.*") }}
+{{ ignore(".*PfxState.*") }}
 {{ ignore("-+") }}
+{{ ignore("") }}
 {{ _start_ }}
-{{ name | ORPHRASE }} {{ ignore(".*") }}
-{{ ignore(".*") }}{{ ip_address | IP }}/{{ cidr | DIGIT }} {{ ignore(".*") }}
+{{ name | ORPHRASE }}{{ ignore(".*") }}
+{{ ignore(".*") }}{{ ip_address | IP }}/{{ cidr | DIGIT }}{{ ignore(".*") }}
 {{ _end_ }}
 </group>

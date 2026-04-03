@@ -5,5 +5,5 @@
 {{ ignore("Port .*Port.*MDIMDX") }}
 {{ ignore("Id.*") }}
 {{ ignore("-+") }}
-{{ port_id }}         {{ admin_state }}    {{ link_state }}  {{ oper_state }}      {{ cfg_mtu }} {{ oper_mtu }} {{ ignore(".*") }}
+{{ port_id | default('') }}         {{ admin_state }}    {{ link_state }}  {{ oper_state }}      {{ cfg_mtu }} {{ oper_mtu }} {{ ignore(".*") }}
 </group>

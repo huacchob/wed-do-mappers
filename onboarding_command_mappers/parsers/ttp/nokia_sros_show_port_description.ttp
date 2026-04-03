@@ -4,5 +4,5 @@
 {{ ignore("=+") }}
 {{ ignore("Port Id.*") }}
 {{ ignore("-+") }}
-{{ port_id }}          {{ description | ORPHRASE }}
+{{ port_id | default('') }}          {{ description | ORPHRASE }}
 </group>
