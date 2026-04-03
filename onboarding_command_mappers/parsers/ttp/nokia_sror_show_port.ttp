@@ -1,0 +1,7 @@
+<group name="ports" method="table">
+{{ ignore("Ports on Slot .*") }}
+{{ ignore("=+") }}
+{{ ignore("Port .*") }}
+{{ ignore("-+") }}
+{{ row | ROW }}
+</group>
