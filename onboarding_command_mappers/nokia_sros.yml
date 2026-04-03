@@ -99,7 +99,7 @@ sync_network_data:
       - command: "show port"
         parser: "ttp"
         jpath: "[0].port_status[?port_id && contains(port_id, '/') && port_id=='{{ current_key }}']"
-        post_processor: "{% if obj %}{% set entry = obj[0] %}{{ entry.cfg_mtu or entry.oper_mtu or '' }}{% else %}{{ '' }}{% endif %}"
+        post_processor: "{% if obj %}{% set entry = obj[0] %}{{ entry.get('cfg_mtu') or entry.get('oper_mtu') or '' }}{% else %}{{ '' }}{% endif %}"
         iterable_type: "str"
   modules:
     root_key: true
