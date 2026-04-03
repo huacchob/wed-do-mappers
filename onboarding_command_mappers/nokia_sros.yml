@@ -73,39 +73,34 @@ sync_network_data:
       - command: "show port description"
         parser: "ttp"
         jpath: "[0].port_descriptions[?port_id && contains(port_id, '/')].port_id"
-    post_processor: |
-      {% set result = {} %}
-      {% for interface in obj %}
-      {{ result.update({interface: {}}) or '' }}
-      {% endfor %}
-      {{ result | tojson }}
+        post_processor: "{% set result={} %}{% for interface in obj %}{{ result.update({interface: {}}) or '' }}{% endfor %}{{ result | tojson }}"
   interfaces__type:
     commands:
       - command: "show port"
         parser: "ttp"
         jpath: "[0].port_status[?port_id && contains(port_id, '/') && port_id=='{{ current_key }}'].port_id"
-    post_processor: "{{ 'ethernet' | map_interface_type }}"
-    iterable_type: "str"
+        post_processor: "{{ 'ethernet' | map_interface_type }}"
+        iterable_type: "str"
   interfaces__description:
     commands:
       - command: "show port description"
         parser: "ttp"
         jpath: "[0].port_descriptions[?port_id && contains(port_id, '/') && port_id=='{{ current_key }}'].description"
-    post_processor: "{{ obj[0] if obj else '' }}"
-    iterable_type: "str"
+        post_processor: "{{ obj[0] if obj else '' }}"
+        iterable_type: "str"
   interfaces__link_status:
     commands:
       - command: "show port"
         parser: "ttp"
         jpath: "[0].port_status[?port_id && contains(port_id, '/') && port_id=='{{ current_key }}'].oper_state"
-    post_processor: "{% if obj %}{{ obj[0] | interface_status_to_bool }}{% else %}False{% endif %}"
+        post_processor: "{% if obj %}{{ obj[0] | interface_status_to_bool }}{% else %}False{% endif %}"
   interfaces__mtu:
     commands:
       - command: "show port"
         parser: "ttp"
         jpath: "[0].port_status[?port_id && contains(port_id, '/') && port_id=='{{ current_key }}']"
-    post_processor: "{% if obj %}{% set entry = obj[0] %}{{ entry.cfg_mtu or entry.oper_mtu or '' }}{% else %}{{ '' }}{% endif %}"
-    iterable_type: "str"
+        post_processor: "{% if obj %}{% set entry = obj[0] %}{{ entry.cfg_mtu or entry.oper_mtu or '' }}{% else %}{{ '' }}{% endif %}"
+        iterable_type: "str"
   modules:
     root_key: true
     commands:
