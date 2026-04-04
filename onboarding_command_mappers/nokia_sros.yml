@@ -64,7 +64,7 @@ sync_network_data:
       commands:
         - command: "show router interface system"
           parser: "ttp"
-          jpath: "[0].router_interfaces"
+          jpath: "[0].router_interfaces[?ip_address]"
   serial:
     commands:
       - command: "show chassis detail"
