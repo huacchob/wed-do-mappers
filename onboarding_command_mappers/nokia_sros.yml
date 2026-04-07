@@ -1,5 +1,11 @@
 ---
 sync_devices:
+  pre_processor:
+    system_interface:
+      commands:
+        - command: "show router interface system"
+          parser: "ttp"
+          jpath: "[0].router_interfaces[?ip_address] | [0]"
   hostname:
     commands:
       - command: "show system information"
@@ -22,14 +28,14 @@ sync_devices:
     commands:
       - command: "show router interface system"
         parser: "ttp"
-        jpath: "[0].router_interfaces[?ip_address=='{{ obj }}'].name || [0].router_interfaces[?ip_address=='10.12.97.10'].name" # yamllint disable-line rule:quoted-strings
-        post_processor: "{{ obj[0] }}"
+        jpath: "[0].router_interfaces[?ip_address=='{{ obj }}'].name || [0].router_interfaces[?name=='system'].name" # yamllint disable-line rule:quoted-strings
+        post_processor: "{% if obj %}{{ obj[0] }}{% else %}{{ system_interface.get('name', 'system') if system_interface else 'system' }}{% endif %}"
   mask_length:
     commands:
       - command: "show router interface system"
         parser: "ttp"
-        jpath: "[0].router_interfaces[?ip_address=='{{ obj }}'].cidr || [0].router_interfaces[?ip_address=='10.12.97.10'].cidr"
-        post_processor: "{{ obj[0] }}"
+        jpath: "[0].router_interfaces[?ip_address=='{{ obj }}'].cidr || [0].router_interfaces[?name=='system'].cidr"
+        post_processor: "{% if obj %}{{ obj[0] }}{% else %}{{ system_interface.get('cidr', 32) if system_interface else 32 }}{% endif %}"
         iterable_type: "int"
 sync_network_data:
   pre_processor:
