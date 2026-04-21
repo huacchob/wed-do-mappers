@@ -1,4 +1,0 @@
-<group name="router_interfaces">
-{{ name | ORPHRASE }}{{ ignore(".*") }}
-   {{ ip_address | IP }}/{{ cidr | DIGIT }}{{ ignore(".*") }}
-</group>
