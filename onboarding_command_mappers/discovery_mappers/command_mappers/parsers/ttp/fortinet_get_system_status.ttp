@@ -1,0 +1,3 @@
+Version: {{ device_type }} {{ ignore(".*") }}
+Serial-Number: {{ serial }}
+Hostname: {{ hostname }}
