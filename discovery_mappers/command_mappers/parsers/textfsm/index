@@ -11,6 +11,12 @@
 #
 Template, Hostname, Platform, Command
 
+alcatel_sros_show_system_information.textfsm, .*, alcatel_sros, sh[[ow]] sys[[tem]] inf[[ormation]]
+alcatel_sros_show_port_description.textfsm, .*, alcatel_sros, sh[[ow]] po[[rt]] desc[[ription]]
+alcatel_sros_show_chassis_detail.textfsm, .*, alcatel_sros, sh[[ow]] chas[[sis]] det[[ail]]
+alcatel_sros_show_version.textfsm, .*, alcatel_sros, sh[[ow]] ver[[sion]]
+alcatel_sros_show_port.textfsm, .*, alcatel_sros, sh[[ow]] po[[rt]]
+
 cisco_xe_show_lldp_neighbors_detail.textfsm, .*, cisco_xe, sh[[ow]] ll[[dp]] nei[[ghbors]] d[[etail]]
 cisco_xe_show_version.textfsm, .*, cisco_xe, sh[[ow]] ver[[sion]]
 
