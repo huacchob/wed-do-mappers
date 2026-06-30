@@ -3,31 +3,67 @@ sync_devices:
   hostname:
     commands:
       - command: "show system info"
-        parser: "ttp"
+        parser: "textfsm"
         jpath: "[*].hostname"
         post_processor: "{{ obj[0] }}"
   serial:
     commands:
       - command: "show system info"
-        parser: "ttp"
+        parser: "textfsm"
         jpath: "[*].serial"
         post_processor: "{{ obj[0] }}"
   device_type:
     commands:
       - command: "show system info"
-        parser: "ttp"
+        parser: "textfsm"
         jpath: "[*].model"
         post_processor: "{{ obj[0] }}"
-  mgmt_interface:
+sync_network_data:
+  software_version:
     commands:
       - command: "show system info"
-        parser: "ttp"
-        jpath: "[*].netmask"
-        post_processor: "Management Interface"
-  mask_length:
+        parser: "textfsm"
+        jpath: "[*].os"
+        post_processor: "{{ obj[0] }}"
+  lldp_neighbors:
+    root_key: true
     commands:
-      - command: "show system info"
-        parser: "ttp"
-        jpath: "[*].netmask"
-        post_processor: "{{ obj[0] | netmask_to_cidr }}"
-        iterable_type: "int"
+      - command: "show lldp neighbors all"
+        parser: "textfsm"
+        jpath: "[*].chassis_id" #  when root_key=true this extracted value is what becomes interable in keys using __ under `current_key`.
+        post_processor: "{% set result={} %}{% for chassis_id in obj %}{{ result.update({chassis_id: {}}) or '' }}{% endfor %}{{ result | tojson }}"
+  lldp_neighbors__local_interface:
+    commands:
+      - command: "show lldp neighbors all"
+        parser: "textfsm"
+        jpath: "[?chassis_id=='{{ current_key }}'].local_interface"
+        post_processor: "{% if obj and obj[0] %}{{ obj[0] }}{% else %}NA{% endif %}"
+        iterable_type: "str"
+  lldp_neighbors__neighbor_interface:
+    commands:
+      - command: "show lldp neighbors all"
+        parser: "textfsm"
+        jpath: "[?chassis_id=='{{ current_key }}'].port_id"
+        post_processor: "{% if obj and obj[0] %}{{ obj[0] }}{% else %}NA{% endif %}"
+        iterable_type: "str"
+  lldp_neighbors__neighbor_mgmt_address:
+    commands:
+      - command: "show lldp neighbors all"
+        parser: "textfsm"
+        jpath: "[?chassis_id=='{{ current_key }}'].mgmt_address"
+        post_processor: "{% if obj and obj[0] %}{{ obj[0] }}{% else %}NA{% endif %}"
+        iterable_type: "str"
+  lldp_neighbors__neighbor_name:
+    commands:
+      - command: "show lldp neighbors all"
+        parser: "textfsm"
+        jpath: "[?chassis_id=='{{ current_key }}'].system_name"
+        post_processor: "{% if obj and obj[0] %}{{ obj[0] }}{% else %}NA{% endif %}"
+        iterable_type: "str"
+  lldp_neighbors__neighbor_description:
+    commands:
+      - command: "show lldp neighbors all"
+        parser: "textfsm"
+        jpath: "[?chassis_id=='{{ current_key }}'].system_description"
+        post_processor: "{% if obj and obj[0] %}{{ obj[0] }}{% else %}NA{% endif %}"
+        iterable_type: "str"

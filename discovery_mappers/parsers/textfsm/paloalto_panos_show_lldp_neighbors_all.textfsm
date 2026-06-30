@@ -1,0 +1,25 @@
+Value LOCAL_INTERFACE (\S+)
+Value LOCAL_PORT_ID (.*)
+Value CHASSIS_TYPE (.*)
+Value Required CHASSIS_ID (.*)
+Value PORT_TYPE (.*)
+Value PORT_ID (.*)
+Value PORT_DESCR (.*)
+Value SYSTEM_NAME (\S+)
+Value SYSTEM_DESCR (.*)
+Value CAPABILITIES_SUPPORTED (.*)
+Value CAPABILITIES_ENABLED (.*)
+
+Start
+  ^Local information: -> Record
+  ^Local interface: ${LOCAL_INTERFACE}
+  ^Local Port ID: ${LOCAL_PORT_ID}
+  ^Chassis type: ${CHASSIS_TYPE}
+  ^Chassis ID: ${CHASSIS_ID}
+  ^Port type: ${PORT_TYPE}
+  ^Port ID: ${PORT_DESCR}
+  ^Port description: ${PORT_ID}
+  ^System name: ${SYSTEM_NAME}
+  ^System description: ${SYSTEM_DESCR}
+  ^Supported: ${CAPABILITIES_SUPPORTED}
+  ^Enabled: ${CAPABILITIES_ENABLED}
