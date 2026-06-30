@@ -1,0 +1,1 @@
+{{ interface | ORPHRASE | replaceall("", " ") }} {{ self_ip }} / {{ netmask }} {{ ignore('.*') }}
