@@ -26,6 +26,7 @@ nokia_sros_show_system_information.textfsm, .*, nokia_sros, sh[[ow]] sys[[tem]] 
 nokia_sros_show_port_description.textfsm, .*, nokia_sros, sh[[ow]] po[[rt]] desc[[ription]]
 nokia_sros_show_chassis_detail.textfsm, .*, nokia_sros, sh[[ow]] chas[[sis]] det[[ail]]
 nokia_sros_show_version.textfsm, .*, nokia_sros, sh[[ow]] ver[[sion]]
+nokia_sros_show_card.textfsm, .*, nokia_sros, sh[[ow]] car[[d]]
 nokia_sros_show_port.textfsm, .*, nokia_sros, sh[[ow]] po[[rt]]
 
 paloalto_panos_show_lldp_neighbors_all.textfsm, .*, paloalto_panos, sh[[ow]] ll[[dp]] nei[[ghbors]] all

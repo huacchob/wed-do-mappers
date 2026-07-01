@@ -53,6 +53,33 @@ sync_devices:
         iterable_type: "int"
 sync_network_data:
   pre_processor:
+    mda_map:
+      commands:
+        - command: "show mda"
+          parser: "raw"
+          jpath: "raw"
+          iterable_type: "dict"
+          post_processor: |
+            {% if obj is string %}
+              {% set source = obj %}
+            {% elif obj is sequence %}
+              {% set source = obj[0] if obj | length > 0 else '' %}
+            {% else %}
+              {% set source = '' %}
+            {% endif %}
+            {% set result = {} %}
+            {% set state = {'slot': ''} %}
+            {% if source %}
+              {% for line in source.split('\n') %}
+                {% set parts = line.split() %}
+                {% if parts | length == 5 and parts[0][0] in '0123456789' %}
+                  {{ state.update({'slot': parts[0]}) or '' }}{{ result.update({parts[0] + '/' + parts[1]: parts[2]}) or '' }}
+                {% elif parts | length == 4 and state.slot and parts[0][0] in '0123456789X' %}
+                  {{ result.update({state.slot + '/' + parts[0]: parts[1]}) or '' }}
+                {% endif %}
+              {% endfor %}
+            {% endif %}
+            {{ result | tojson }}
     router_interfaces:
       commands:
         - command: "show router interface system"
@@ -127,4 +154,39 @@ sync_network_data:
       - command: "show version"
         parser: "textfsm"
         jpath: "[0].version"
+        iterable_type: "str"
+  modules:
+    root_key: true
+    commands:
+      - command: "show card"
+        parser: "textfsm"
+        jpath: "[?admin_state=='up' || admin_state=='down']"
+        post_processor: "{% set result={} %}{% for card in obj %}{{ result.update({'Slot ' + card.slot: {}}) or '' }}{% endfor %}{% for mda_name in mda_map %}{{ result.update({'MDA ' + mda_name: {}}) or '' }}{% endfor %}{{ result | tojson }}"
+  modules__module_type:
+    commands:
+      - command: "show card"
+        parser: "textfsm"
+        jpath: "[?admin_state=='up' || admin_state=='down']"
+        post_processor: "{%- if current_key.startswith('MDA ') -%}{{ mda_map.get(current_key[4:], '') }}{%- else -%}{%- set slot = current_key[5:] -%}{%- for card in obj -%}{%- if card.slot == slot -%}{{ card.card_type }}{%- endif -%}{%- endfor -%}{%- endif -%}"
+        iterable_type: "str"
+  modules__manufacturer:
+    commands:
+      - command: "show card"
+        parser: "textfsm"
+        jpath: "[*]"
+        post_processor: "{{ 'Nokia' }}"
+        iterable_type: "str"
+  modules__serial:
+    commands:
+      - command: "show card"
+        parser: "textfsm"
+        jpath: "[*]"
+        post_processor: "{{ '' }}"
+        iterable_type: "str"
+  modules__description:
+    commands:
+      - command: "show card"
+        parser: "textfsm"
+        jpath: "[?admin_state=='up' || admin_state=='down']"
+        post_processor: "{%- if current_key.startswith('MDA ') -%}{{ mda_map.get(current_key[4:], '') }}{%- else -%}{%- set slot = current_key[5:] -%}{%- for card in obj -%}{%- if card.slot == slot -%}{{ card.card_type }}{%- endif -%}{%- endfor -%}{%- endif -%}"
         iterable_type: "str"
