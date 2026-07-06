@@ -48,6 +48,12 @@ sync_devices:
         post_processor: "{% set nm = system_info.get('netmask', '') %}{% if nm %}{{ nm | netmask_to_cidr }}{% else %}32{% endif %}"
         iterable_type: "int"
 sync_network_data:
+  serial:
+    commands:
+      - command: "show system info"
+        parser: "raw"
+        jpath: "raw"
+        post_processor: "{{ system_info.get('serial', '') }}"
   software_version:
     commands:
       - command: "show system info"
