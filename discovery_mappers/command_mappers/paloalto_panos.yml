@@ -19,6 +19,12 @@ sync_devices:
         jpath: "[*].model"
         post_processor: "{{ obj[0] }}"
 sync_network_data:
+  serial:
+    commands:
+      - command: "show system info"
+        parser: "textfsm"
+        jpath: "[*].serial"
+        post_processor: "{{ obj[0] }}"
   software_version:
     commands:
       - command: "show system info"
