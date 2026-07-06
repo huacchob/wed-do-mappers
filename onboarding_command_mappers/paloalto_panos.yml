@@ -48,6 +48,22 @@ sync_devices:
         post_processor: "{% set nm = system_info.get('netmask', '') %}{% if nm %}{{ nm | netmask_to_cidr }}{% else %}32{% endif %}"
         iterable_type: "int"
 sync_network_data:
+  pre_processor:
+    system_info:
+      commands:
+        - command: "show system info"
+          parser: "raw"
+          jpath: "raw"
+          iterable_type: "dict"
+          post_processor: |
+            {% set ns = namespace(result={}) %}
+            {% set tokens = obj.split() %}
+            {% for i in range(tokens | length - 1) %}
+              {% if tokens[i].endswith(':') %}
+                {{ ns.result.update({tokens[i][:-1]: tokens[i + 1]}) or '' }}
+              {% endif %}
+            {% endfor %}
+            {{ ns.result | tojson }}
   serial:
     commands:
       - command: "show system info"
