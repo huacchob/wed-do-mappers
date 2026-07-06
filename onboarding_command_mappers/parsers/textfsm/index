@@ -17,4 +17,3 @@ cisco_xe_show_version.textfsm, .*, cisco_xe, sh[[ow]] ver[[sion]]
 hp_comware_display_version.textfsm, .*, hp_comware, dis[[play]] ver[[sion]]
 
 paloalto_panos_show_lldp_neighbors_all.textfsm, .*, paloalto_panos, sh[[ow]] ll[[dp]] nei[[ghbors]] all
-paloalto_panos_show_system_info.textfsm, .*, paloalto_panos, sh[[ow]] sys[[tem]] in[[fo]]
