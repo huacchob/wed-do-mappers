@@ -158,7 +158,8 @@ sync_network_data:
       - command: "show interface all"
         parser: "ttp"
         jpath: "[0].hardware[?name=='{{ current_key }}'].sdsf"
-        post_processor: "{% if obj and obj[0] %}{{ obj[0].split('/')[2] | interface_status_to_bool }}{% else %}{{ false }}{% endif %}"
+        # `tojson` emits lowercase true/false so the formatter normalizes it back to a real boolean.
+        post_processor: "{% if obj and obj[0] %}{{ (obj[0].split('/')[2] | interface_status_to_bool) | tojson }}{% else %}{{ false | tojson }}{% endif %}"
   interfaces__lag:
     commands:
       - command: "show interface all"
@@ -173,45 +174,3 @@ sync_network_data:
         jpath: "[0].routing[?name=='{{ current_key }}'].vrf"
         post_processor: "{% if obj and obj[0] and 'vr:' in obj[0] %}{{ {'name': obj[0].split('vr:')[1]} | tojson }}{% else %}{{ {} | tojson }}{% endif %}"
         iterable_type: "dict"
-  lldp_neighbors:
-    root_key: true
-    commands:
-      - command: "show lldp neighbors all"
-        parser: "textfsm"
-        jpath: "[*].chassis_id"
-        post_processor: "{% set result={} %}{% for chassis_id in obj %}{{ result.update({chassis_id: {}}) or '' }}{% endfor %}{{ result | tojson }}"
-  lldp_neighbors__local_interface:
-    commands:
-      - command: "show lldp neighbors all"
-        parser: "textfsm"
-        jpath: "[?chassis_id=='{{ current_key }}'].local_interface"
-        post_processor: "{% if obj and obj[0] %}{{ obj[0] }}{% else %}NA{% endif %}"
-        iterable_type: "str"
-  lldp_neighbors__neighbor_interface:
-    commands:
-      - command: "show lldp neighbors all"
-        parser: "textfsm"
-        jpath: "[?chassis_id=='{{ current_key }}'].port_id"
-        post_processor: "{% if obj and obj[0] %}{{ obj[0] }}{% else %}NA{% endif %}"
-        iterable_type: "str"
-  lldp_neighbors__neighbor_mgmt_address:
-    commands:
-      - command: "show lldp neighbors all"
-        parser: "textfsm"
-        jpath: "[?chassis_id=='{{ current_key }}'].mgmt_address"
-        post_processor: "{% if obj and obj[0] %}{{ obj[0] }}{% else %}NA{% endif %}"
-        iterable_type: "str"
-  lldp_neighbors__neighbor_name:
-    commands:
-      - command: "show lldp neighbors all"
-        parser: "textfsm"
-        jpath: "[?chassis_id=='{{ current_key }}'].system_name"
-        post_processor: "{% if obj and obj[0] %}{{ obj[0] }}{% else %}NA{% endif %}"
-        iterable_type: "str"
-  lldp_neighbors__neighbor_description:
-    commands:
-      - command: "show lldp neighbors all"
-        parser: "textfsm"
-        jpath: "[?chassis_id=='{{ current_key }}'].system_description"
-        post_processor: "{% if obj and obj[0] %}{{ obj[0] }}{% else %}NA{% endif %}"
-        iterable_type: "str"
