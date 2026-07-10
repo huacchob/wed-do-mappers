@@ -1,0 +1,50 @@
+Value VERSION (.+)
+Value UPTIME (.+)
+Value REBOOT_REASON (.+)
+Value BOOT_IMAGE (.+)
+Value BOOT_VERSION (.+)
+Value BOOT_COMPILED (.+)
+Value SYSTEM_IMAGE (.+)
+Value SYSTEM_VERSION (.+)
+Value SYSTEM_COMPILED (.+)
+Value SLOT (\d+)
+Value SLOT_UPTIME (.+)
+Value PROCESSORS (.+)
+Value BOARD_TYPE (.+)
+Value DRAM (.+)
+Value FLASH (.+)
+Value PCB1_VERSION (.+)
+Value PCB2_VERSION (.+)
+Value BOOTROM_VERSION (.+)
+Value CPLD1_VERSION (.+)
+Value CPLD2_VERSION (.+)
+Value RELEASE_VERSION (.+)
+Value PATCH_VERSION (.+)
+Value REBOOT_CAUSE (.+)
+Value SUBSLOT (.+)
+
+Start
+  ^HP Comware Software, Version ${VERSION}
+  ^HP \S+ Switch uptime is ${UPTIME}
+  ^Last reboot reason : ${REBOOT_REASON}
+  ^Boot image: ${BOOT_IMAGE}
+  ^Boot image version: ${BOOT_VERSION}
+  ^\s+Compiled ${BOOT_COMPILED}
+  ^System image: ${SYSTEM_IMAGE}
+  ^System image version: ${SYSTEM_VERSION}
+  ^\s+Compiled ${SYSTEM_COMPILED}
+  ^Slot ${SLOT}:
+  ^Uptime is ${SLOT_UPTIME}
+  ^FF \S+ Switch with ${PROCESSORS} Processors
+  ^BOARD TYPE:\s+${BOARD_TYPE}
+  ^DRAM:\s+${DRAM}
+  ^FLASH:\s+${FLASH}
+  ^PCB 1 Version:\s+${PCB1_VERSION}
+  ^PCB 2 Version:\s+${PCB2_VERSION}
+  ^Bootrom Version:\s+${BOOTROM_VERSION}
+  ^CPLD 1 Version:\s+${CPLD1_VERSION}
+  ^CPLD 2 Version:\s+${CPLD2_VERSION}
+  ^Release Version:\s+${RELEASE_VERSION}
+  ^Patch Version  :\s+${PATCH_VERSION}
+  ^Reboot Cause  : \s+${REBOOT_CAUSE}
+  ^\[SubSlot ${SUBSLOT}\]

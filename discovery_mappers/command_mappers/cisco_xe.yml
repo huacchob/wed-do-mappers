@@ -1,0 +1,63 @@
+---
+sync_devices:
+  hostname:
+    commands:
+      - command: "show version"
+        parser: "textfsm"
+        jpath: "[*].hostname"
+  serial:
+    commands:
+      - command: "show version"
+        parser: "textfsm"
+        jpath: "[*].serial[]"
+        post_processor: "{{ obj | unique | first }}"
+        iterable_type: "str"
+  device_type:
+    commands:
+      - command: "show version"
+        parser: "textfsm"
+        jpath: "[*].hardware[]"
+        post_processor: "{{ obj | unique | first }}"
+sync_network_data:
+  software_version:
+    commands:
+      - command: "show version"
+        parser: "textfsm"
+        jpath: "[*].version"
+  lldp_neighbors:
+    root_key: true
+    commands:
+      - command: "show lldp neighbors detail"
+        parser: "textfsm"
+        jpath: "[*].chassis_id"  #  when root_key=true this extracted value is what becomes interable in keys using __ under `current_key`.
+        post_processor: "{% set result={} %}{% for chassis_id in obj %}{{ result.update({chassis_id: {}}) or '' }}{% endfor %}{{ result | tojson }}"
+  lldp_neighbors__local_interface:
+    commands:
+      - command: "show lldp neighbors detail"
+        parser: "textfsm"
+        jpath: "[?chassis_id=='{{ current_key }}'].local_interface"
+        iterable_type: "str"
+  lldp_neighbors__neighbor_interface:
+    commands:
+      - command: "show lldp neighbors detail"
+        parser: "textfsm"
+        jpath: "[?chassis_id=='{{ current_key }}'].neighbor_interface"
+        iterable_type: "str"
+  lldp_neighbors__neighbor_mgmt_address:
+    commands:
+      - command: "show lldp neighbors detail"
+        parser: "textfsm"
+        jpath: "[?chassis_id=='{{ current_key }}'].mgmt_address"
+        iterable_type: "str"
+  lldp_neighbors__neighbor_name:
+    commands:
+      - command: "show lldp neighbors detail"
+        parser: "textfsm"
+        jpath: "[?chassis_id=='{{ current_key }}'].neighbor_name"
+        iterable_type: "str"
+  lldp_neighbors__neighbor_description:
+    commands:
+      - command: "show lldp neighbors detail"
+        parser: "textfsm"
+        jpath: "[?chassis_id=='{{ current_key }}'].neighbor_description"
+        iterable_type: "str"
