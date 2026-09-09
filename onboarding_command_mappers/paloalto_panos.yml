@@ -112,8 +112,8 @@ sync_network_data:
           {% set default = {'type': '', 'ip_addresses': [], 'mac_address': '', 'mtu': '', 'description': '', 'link_status': false, '802.1Q_mode': '', 'lag': '', 'untagged_vlan': {}, 'tagged_vlans': []} %}
           {% for iface in src.get('hardware', []) %}{{ result.update({iface.name: default}) or '' }}{% endfor %}
           {% for iface in src.get('logical', []) %}{% if iface.name not in result %}{{ result.update({iface.name: default}) or '' }}{% endif %}{% endfor %}
-          {# The out-of-band `management` interface is not listed by `show interface all`; add it so the mgmt IP has a home. #}
-          {{ result.update({'management': default}) or '' }}
+          {# The management interface is absent from `show interface all`; it comes from `show system info`. #}
+          {% if 'management' not in result %}{{ result.update({'management': default}) or '' }}{% endif %}
           {{ result | tojson }}
   interfaces__type:
     commands:
@@ -136,6 +136,13 @@ sync_network_data:
           {%- else -%}other
           {%- endif -%}
         iterable_type: "str"
+  interfaces__description:
+    commands:
+      - command: "show interface all"
+        parser: "ttp"
+        jpath: "[0].logical[?name=='{{ current_key }}'].zone"
+        post_processor: "{% if current_key == 'management' %}{{ '' }}{% elif obj and obj[0] %}{{ obj[0] }}{% else %}{{ '' }}{% endif %}"
+        iterable_type: "str"
   interfaces__ip_addresses:
     commands:
       - command: "show interface all"
@@ -144,13 +151,13 @@ sync_network_data:
         post_processor: |
           {% set result = [] %}
           {% if current_key == 'management' %}
-            {% set ip = system_info.get('ip-address', '') %}
-            {% set nm = system_info.get('netmask', '') %}
-            {% if ip %}{{ result.append({'ip_address': ip, 'prefix_length': (nm | netmask_to_cidr) if nm else 32}) or '' }}{% endif %}
+            {% set mgmt_ip = system_info.get('ip-address', '') %}
+            {% set mgmt_netmask = system_info.get('netmask', '') %}
+            {% if mgmt_ip and mgmt_ip != 'unknown' and mgmt_netmask %}{{ result.append({'ip_address': mgmt_ip, 'prefix_length': mgmt_netmask | netmask_to_cidr | int}) or '' }}{% endif %}
           {% else %}
             {% for addr in obj %}
               {% set parts = addr.split('/') %}
-              {% if parts | length == 2 %}{{ result.append({'ip_address': parts[0], 'prefix_length': parts[1] | int}) or '' }}{% endif %}
+              {% if addr != 'N/A' and parts | length == 2 %}{{ result.append({'ip_address': parts[0], 'prefix_length': parts[1] | int}) or '' }}{% endif %}
             {% endfor %}
           {% endif %}
           {{ result | tojson }}
@@ -168,7 +175,6 @@ sync_network_data:
         parser: "ttp"
         jpath: "[0].hardware[?name=='{{ current_key }}'].sdsf"
         # `tojson` emits lowercase true/false so the formatter normalizes it back to a real boolean.
-        # The management interface is reachable (we polled the device over it), so treat it as up.
         post_processor: "{% if current_key == 'management' %}{{ true | tojson }}{% elif obj and obj[0] %}{{ (obj[0].split('/')[2] | interface_status_to_bool) | tojson }}{% else %}{{ false | tojson }}{% endif %}"
   interfaces__lag:
     commands:
